@@ -9,6 +9,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AppNavigationHeader: typeof import('./components/AppNavigation/AppNavigationHeader.vue')['default']
     AppSideBar: typeof import('./components/AppNavigation/AppSideBar.vue')['default']
+    AppWidget: typeof import('./components/AppStatistcs/AppWidget.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElIcon: typeof import('element-plus/es')['ElIcon']

@@ -15,6 +15,7 @@
     "chart.js": "^4.1.1",
     "element-plus": "^2.2.27",
     "pinia": "^2.0.28",
+    "uuid": "^9.0.0",
     "vue": "^3.2.45",
     "vue-chartjs": "^5.1.0",
     "vue-router": "^4.1.6"

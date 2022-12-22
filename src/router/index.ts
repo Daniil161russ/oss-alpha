@@ -6,17 +6,26 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../pages/HomePage.vue')
+      component: () => import('../pages/HomePage.vue'),
+      meta: {
+        layout: 'AppLayoutDefault'
+      }
     },
     {
       path: '/statistics',
       name: 'statistics',
-      component: () => import('../pages/StatisticsPage.vue')
+      component: () => import('../pages/StatisticsPage.vue'),
+      meta: {
+        layout: 'AppLayoutDefault'
+      }
     },
     {
       path: '/configuration',
       name: 'configuration',
-      component: () => import('../pages/ConfigurationPage.vue')
+      component: () => import('../pages/ConfigurationPage.vue'),
+      meta: {
+        layout: 'AppLayoutDefault'
+      }
     }
   ]
 })
