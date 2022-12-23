@@ -1,9 +1,9 @@
 <template>
   <div class="widget">
     <div class="header">
-      <el-date-picker v-model="payload.dateValue" type="date" placeholder="Pick a day" class="m-2" />
+      <el-date-picker v-model="payload.dateValue" type="date" placeholder="Pick a day" class="header-date-picker" />
 
-      <el-select v-model="payload.timeAggrValue" class="m-2" placeholder="Select">
+      <el-select v-model="payload.timeAggrValue" class="m-1" placeholder="Select">
         <el-option v-for="item in timeAggrOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
 
@@ -35,11 +35,23 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js'
 import { Line } from 'vue-chartjs'
 import { useFilterStore } from '@/stores/filterStore'
 import { useStatisticsStore } from '@/stores/statisticsStore'
 import type { PropType } from 'vue'
 import type { NetworkElemOptions, GroupOptions, KpiOptions, ReqWidget } from '@/models'
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 const props = defineProps({
   widgetData: {
@@ -183,12 +195,18 @@ const kpiOptions: KpiOptions[] = [
   padding: 15px;
   background-color: #fff;
   border-radius: 0.3rem;
+
   .header {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+
+    .m-1 {
+      width: 48%;
+      margin-bottom: 0.5rem;
+    }
     .m-2 {
-      width: calc((100% - 7.8rem) / 3);
+      width: 24%;
       margin-bottom: 0.5rem;
     }
   }

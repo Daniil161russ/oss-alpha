@@ -24,22 +24,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js'
 import AppWidget from '@/components/AppStatistcs/AppWidget.vue'
 import { useFilterStore } from '@/stores/filterStore'
 import { useStatisticsStore } from '@/stores/statisticsStore'
 import type { ReqWidget } from '@/models'
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 const widgets = ref<ReqWidget[]>()
 
