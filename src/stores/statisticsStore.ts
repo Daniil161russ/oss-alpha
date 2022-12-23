@@ -26,18 +26,38 @@ export const useStatisticsStore = defineStore('statisticsStore', {
 
   actions: {
     addWidget() {
-      const defaultWidget: ReqWidget = {
-        id: uuidv4(),
-        region: '',
-        dateValue: '',
-        timeAggrValue: undefined,
-        networkElemOneValue: '',
-        networkElemTwoValue: '',
-        groupValue: '',
-        kpiValue: ''
-      }
+      if (this.widgets.length >= 6) {
+        ElMessage({
+          message: 'Warning, maximum number of widgets.',
+          type: 'warning'
+        })
+      } else {
+        const defaultWidget: ReqWidget = {
+          id: uuidv4(),
+          region: '',
+          dateValue: '',
+          timeAggrValue: undefined,
+          networkElemOneValue: '',
+          networkElemTwoValue: '',
+          groupValue: '',
+          kpiValue: ''
+        }
 
-      this.widgets.push(defaultWidget)
+        this.widgets.push(defaultWidget)
+      }
+    },
+
+    deleteWidget(id: string) {
+      if (this.widgets.length === 1) {
+        ElMessage({
+          message: 'Warning, minimum number of widgets one.',
+          type: 'warning'
+        })
+      } else {
+        this.widgets = this.widgets.filter(w => {
+          return w.id !== id
+        })
+      }
     }
   }
 })

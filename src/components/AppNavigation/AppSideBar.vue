@@ -24,8 +24,6 @@ const isExpanded = ref(localStorage.getItem('isExpanded') === 'true')
 const ToggleMenu = () => {
   isExpanded.value = !isExpanded.value
 
-  console.log(isExpanded.value)
-
   localStorage.setItem('isExpanded', new Boolean(isExpanded.value).toString())
 }
 </script>

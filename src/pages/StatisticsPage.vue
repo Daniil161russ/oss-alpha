@@ -13,6 +13,8 @@ import StatisticsView from '@/views/StatisticsView.vue'
 
 <style scoped lang="scss">
 .statistics {
+  max-height: 100vh;
+  overflow-y: auto;
   header {
     margin-bottom: 1rem;
   }

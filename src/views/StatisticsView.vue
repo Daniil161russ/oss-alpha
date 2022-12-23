@@ -8,7 +8,7 @@
 
       <el-button type="primary" @click="useStatisticsStore().addWidget">
         <el-icon><Plus /></el-icon>
-        <span>Add chart</span>
+        <span>Add widget</span>
       </el-button>
     </div>
     <div class="widget-list">
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -47,9 +47,16 @@ onMounted(() => {
   widgets.value = useStatisticsStore().widgets
 })
 
+watch(
+  () => useStatisticsStore().widgets,
+  () => {
+    widgets.value = useStatisticsStore().widgets
+  }
+)
+
 // filter
 const regionValue = ref('')
-
+// widget filters
 const requestPayload = ref<ReqWidget>()
 
 const setRequestPayload = payload => {

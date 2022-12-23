@@ -1,16 +1,12 @@
 <template>
   <div class="widget">
     <div class="header">
-      <el-date-picker v-model="payload.dateValue" type="date" placeholder="Pick a day" />
+      <el-date-picker v-model="payload.dateValue" type="date" placeholder="Pick a day" class="m-2" />
 
       <el-select v-model="payload.timeAggrValue" class="m-2" placeholder="Select">
         <el-option v-for="item in timeAggrOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-    </div>
-    <div class="chart">
-      <Line :data="data" :options="options" />
-    </div>
-    <div class="footer">
+
       <el-select v-model="payload.networkElemOneValue" class="m-2" placeholder="Select">
         <el-option v-for="item in networkElemOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
@@ -27,13 +23,21 @@
         <el-option v-for="item in kpiOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
     </div>
+    <div class="chart">
+      <Line :data="data" :options="options" />
+    </div>
+    <div class="footer">
+      <el-button type="success">Fetch</el-button>
+      <el-button type="danger" plain @click="useStatisticsStore().deleteWidget(props.widgetData.id)">Delete</el-button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, defineProps } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { Line } from 'vue-chartjs'
 import { useFilterStore } from '@/stores/filterStore'
+import { useStatisticsStore } from '@/stores/statisticsStore'
 import type { PropType } from 'vue'
 import type { NetworkElemOptions, GroupOptions, KpiOptions, ReqWidget } from '@/models'
 
@@ -56,6 +60,11 @@ const data = ref({
       label: 'Data One',
       backgroundColor: '#f87979',
       data: [40, 39, 10, 40, 39, 80, 40]
+    },
+    {
+      label: 'Data Two',
+      backgroundColor: '#34eb74',
+      data: [10, 19, 40, 22, 9, 4, 20]
     }
   ]
 })
@@ -75,8 +84,6 @@ const payload = reactive({
 })
 
 const setDefaultValues = () => {
-  console.log(props.widgetData)
-
   payload.dateValue = props.widgetData.dateValue as string
   payload.timeAggrValue = undefined
   payload.networkElemOneValue = props.widgetData.networkElemOneValue as string
@@ -173,19 +180,25 @@ const kpiOptions: KpiOptions[] = [
 .widget {
   width: 48%;
   margin-bottom: 1.5rem;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 0.3rem;
   .header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    .m-2 {
+      width: calc((100% - 7.8rem) / 3);
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .chart {
+    margin-bottom: 0.5rem;
   }
 
   .footer {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .el-select {
-      margin-right: 0.25rem;
-    }
   }
 }
 </style>
