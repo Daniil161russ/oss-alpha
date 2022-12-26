@@ -26,6 +26,14 @@ const router = createRouter({
       meta: {
         layout: 'AppLayoutDefault'
       }
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: () => import('../pages/RrlTestPage.vue'),
+      meta: {
+        layout: 'AppLayoutDefault'
+      }
     }
   ]
 })

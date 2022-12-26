@@ -12,6 +12,10 @@
       <el-icon class="menu-icon"><SetUp /></el-icon>
       <span class="text">Configuration</span>
     </RouterLink>
+    <RouterLink class="button" to="/test">
+      <el-icon class="menu-icon"><Cpu /></el-icon>
+      <span class="text">RRL Test</span>
+    </RouterLink>
   </div>
 </template>
 

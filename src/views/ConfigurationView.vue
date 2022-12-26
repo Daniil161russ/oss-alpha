@@ -6,7 +6,7 @@
         <el-option v-for="item in regionOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
     </div>
-    <div class="configuration-content">
+    <div class="configuration-body">
       <div class="configuration-table">
         <div class="header">
           <el-select v-model="featureValue" class="m-2" placeholder="Select">
@@ -175,7 +175,7 @@ const remove = (node: Node, data: Tree) => {
     margin-bottom: 1.2rem;
   }
 
-  .configuration-content {
+  .configuration-body {
     display: flex;
     justify-content: space-between;
 
