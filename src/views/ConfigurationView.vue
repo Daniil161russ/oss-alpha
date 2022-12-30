@@ -7,7 +7,7 @@
       </el-select>
     </div>
     <div class="configuration-body">
-      <div class="configuration-table">
+      <!-- <div class="configuration-table">
         <div class="header">
           <el-select v-model="featureValue" class="m-2" placeholder="Select">
             <el-option v-for="item in featureOptions" :key="item.value" :label="item.label" :value="item.value" />
@@ -22,7 +22,7 @@
           <el-table-column prop="name" label="Name" width="180" />
           <el-table-column prop="address" label="Address" />
         </el-table>
-      </div>
+      </div> -->
 
       <div class="configuration-topology">
         <h3>Topology</h3>
@@ -38,12 +38,19 @@
           </template>
         </el-tree>
       </div>
+      <div class="configuration-topology-edir">
+        <h3>Изменение параметров</h3>
+        <div class="edit">
+          <el-input v-model="input" placeholder="User label" />
+          <el-button type="success" @click="handleBtn()">Submit</el-button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useFilterStore } from '@/stores/filterStore'
 import type Node from 'element-plus/es/components/tree/src/model/node'
 
@@ -52,6 +59,8 @@ const regionValue = ref('')
 
 // table filter
 const featureValue = ref('')
+const input = ref('')
+const result = ref('userLabel = eNodeB_1')
 const timeAggrValue = ref<number>()
 
 const regionOptions = useFilterStore().regions
@@ -114,22 +123,156 @@ interface Tree {
 
 let id = 1000
 
-const dataSource = ref<Tree[]>([
+const handleBtn = () => {
+  result.value = `userLabel = ` + input.value
+}
+
+const dataSource = computed<Tree[]>(() => [
   {
     id: 1,
     label: 'ENBFunction',
     children: [
       {
+        id: 2,
+        label: 'eNBFunctionId = eNB1'
+      },
+      {
+        id: 3,
+        label: result.value
+      },
+      {
         id: 4,
-        label: 'ENodeB 1-1',
+        label: 'eNBId = 16789'
+      },
+      {
+        id: 5,
+        label: 'intraANRSwitch = false'
+      },
+      {
+        id: 6,
+        label: 'iRATANRSwitch = false'
+      },
+      {
+        id: 7,
+        label: 'X2IpAddressListList',
         children: [
           {
-            id: 9,
-            label: 'Cell-1-1-1'
-          },
+            id: 8,
+            label: 'x2IpAddressList = 10.10.0.7'
+          }
+        ]
+      },
+      {
+        id: 9,
+        label: 'X2BlackList',
+        children: [
           {
             id: 10,
-            label: 'Cell-1-1-2'
+            label: 'dn = ref to X2BlackList element'
+          }
+        ]
+      },
+      {
+        id: 11,
+        label: 'X2WhiteList',
+        children: [
+          {
+            id: 12,
+            label: 'dn = ref to X2WhiteList element'
+          }
+        ]
+      },
+      {
+        id: 13,
+        label: 'X2HOBlackList',
+        children: [
+          {
+            id: 14,
+            label: 'dn = ref to X2HOBlackList element'
+          }
+        ]
+      },
+      {
+        id: 15,
+        label: 'TceIDMappingInfoList',
+        children: [
+          {
+            id: 16,
+            label: 'tceID = 34'
+          },
+          {
+            id: 17,
+            label: 'tceIPAddr = 10.10.0.6'
+          }
+        ]
+      },
+      {
+        id: 18,
+        label: 'SharNetTceMappingInfoList',
+        children: [
+          {
+            id: 19,
+            label: 'PlmnId',
+            children: [
+              {
+                id: 20,
+                label: 'mcc = 250'
+              },
+              {
+                id: 21,
+                label: 'mcc = 01'
+              }
+            ]
+          },
+          {
+            id: 22,
+            label: '34'
+          },
+          {
+            id: 23,
+            label: '10.10.0.6'
+          }
+        ]
+      },
+      {
+        id: 24,
+        label: 'NetListeningRSForRIBS',
+        children: [
+          {
+            id: 25,
+            label: 'numOfCrsPorts = 1'
+          },
+          {
+            id: 26,
+            label: 'referenceSignalOffset = 5'
+          },
+          {
+            id: 27,
+            label: 'referenceSignalPattern = YES'
+          },
+          {
+            id: 28,
+            label: 'referenceSignalPeriodicity = MS1280'
+          }
+        ]
+      },
+      {
+        id: 29,
+        label: 'LWIPSeGWList',
+        children: [
+          {
+            id: 30,
+            label: 'lWIPSeGWId = gw1'
+          },
+          {
+            id: 31,
+            label: 'lWIPSeGWIpAddressList',
+            children: [
+              {
+                id: 32,
+                label: 'referenceSignalPattern = YES'
+              }
+            ]
           }
         ]
       }
@@ -163,7 +306,7 @@ const remove = (node: Node, data: Tree) => {
 
   .configuration-body {
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
 
     .configuration-table {
       width: 60%;
@@ -178,9 +321,22 @@ const remove = (node: Node, data: Tree) => {
       }
     }
 
+    .edit {
+      display: flex;
+      button {
+        margin-left: 0.5rem;
+      }
+    }
+
+    .configuration-topology-edir {
+      h3 {
+        margin-bottom: 1.2rem;
+      }
+    }
+
     .configuration-topology {
       width: 38%;
-
+      margin-right: 2rem;
       h3 {
         line-height: 32px;
         margin-bottom: 0.5rem;
