@@ -1,7 +1,7 @@
 <template>
   <main class="configuration">
     <header>
-      <h1>This is an configuration page</h1>
+      <h1>Управление Конфигурацией</h1>
     </header>
     <ConfigurationView />
   </main>

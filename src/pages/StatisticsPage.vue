@@ -1,7 +1,7 @@
 <template>
   <main class="statistics">
     <header>
-      <h1>Statistics</h1>
+      <h1>Управление Статистикой</h1>
     </header>
     <StatisticsView />
   </main>

@@ -117,7 +117,7 @@ let id = 1000
 const dataSource = ref<Tree[]>([
   {
     id: 1,
-    label: 'ENodeB 1',
+    label: 'ENBFunction',
     children: [
       {
         id: 4,
@@ -132,20 +132,6 @@ const dataSource = ref<Tree[]>([
             label: 'Cell-1-1-2'
           }
         ]
-      }
-    ]
-  },
-  {
-    id: 2,
-    label: 'ENodeB 2',
-    children: [
-      {
-        id: 5,
-        label: 'Cell-2-1'
-      },
-      {
-        id: 6,
-        label: 'Cell-2-2'
       }
     ]
   }

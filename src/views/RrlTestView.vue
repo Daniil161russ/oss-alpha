@@ -12,7 +12,7 @@
 
       <el-button type="primary" @click="fetchData">Fetch</el-button>
     </div>
-    <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+    <el-tabs v-model="activeName" class="demo-tabs">
       <el-tab-pane label="Table" name="first">
         <div class="rrl-table">
           <el-table :data="tableData" style="width: 100%">
@@ -28,22 +28,52 @@
           </el-table>
         </div>
       </el-tab-pane>
+
       <el-tab-pane label="Chart" name="second">
+        <el-select v-model="chartAggr" class="m-1" placeholder="Select" @change="handleSelect">
+          <el-option v-for="item in chartAggrOptions" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
         <div class="rrl-chart">
-          <el-select v-model="chartAggr" class="m-1" placeholder="Select">
-            <el-option v-for="item in chartAggrOptions" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
           <Line :data="data" :options="options" />
         </div>
       </el-tab-pane>
+
+      <el-tab-pane label="Aggregate Chart" name="third">
+        <div class="aggr-chart-header">
+          <el-select v-model="timeAggrValue" class="m-3" placeholder="Select">
+            <el-option v-for="item in filterStore.timeAggr" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+
+          <el-select v-model="hostValue" class="m-3" placeholder="Select">
+            <el-option v-for="item in hostOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+
+          <el-select v-model="counterValue" class="m-3" placeholder="Select">
+            <el-option v-for="item in counterOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+
+          <el-button type="success" @click="fetchAggrChart">Fetch</el-button>
+        </div>
+
+        <div class="aggr-rrl-chart" v-if="rrlTestStore.aggregateRrl.length">
+          <Line :data="dataAggr" :options="optionsAggr" />
+        </div>
+      </el-tab-pane>
     </el-tabs>
-    <el-pagination layout="prev, pager, next" :currentPage="page" :total="rrlTestStore.count" @current-change="setPage"/>
+    <el-pagination
+      v-if="activeName !== 'third'"
+      layout="prev, pager, next"
+      :currentPage="page"
+      :total="rrlTestStore.count"
+      @current-change="setPage"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRrlTestStore } from '@/stores/rrlTestStore'
+import { useFilterStore } from '@/stores/filterStore'
 
 import {
   Chart as ChartJS,
@@ -60,27 +90,49 @@ import { Line } from 'vue-chartjs'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 const rrlTestStore = useRrlTestStore()
+const filterStore = useFilterStore()
 
 const range = ref('')
 const activeName = ref('first')
-const chartAggr = ref('requests')
+const chartAggr = ref('')
+const timeAggrValue = ref()
+const hostValue = ref('')
+const counterValue = ref()
 let page = ref(1)
 
-const data = ref({
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+let chartKpiDataOne = ref(rrlTestStore.getRequests?.one)
+let chartKpiDataTwo = ref(rrlTestStore.getRequests?.two)
+
+const dataAggr = computed(() => ({
+  labels: rrlTestStore.getAggregateDateTime,
   datasets: [
     {
-      label: 'Data One',
       backgroundColor: '#f87979',
-      data: [40, 39, 10, 40, 39, 80, 40]
-    },
-    {
-      label: 'Data Two',
-      backgroundColor: '#34eb74',
-      data: [10, 19, 40, 22, 9, 4, 20]
+      data: rrlTestStore.getAggregateData
     }
   ]
+}))
+
+const optionsAggr = ref({
+  responsive: true,
+  maintainAspectRatio: false
 })
+
+const data = computed(() => ({
+  labels: rrlTestStore.getDateTime,
+  datasets: [
+    {
+      label: '192.168.0.14',
+      backgroundColor: '#f87979',
+      data: chartKpiDataOne.value
+    },
+    {
+      label: '192.168.0.15',
+      backgroundColor: '#5af542',
+      data: chartKpiDataTwo.value
+    }
+  ]
+}))
 
 const chartAggrOptions = [
   {
@@ -101,14 +153,54 @@ const chartAggrOptions = [
   }
 ]
 
+const hostOptions = [
+  {
+    value: '192.168.0.14',
+    label: '192.168.0.14'
+  },
+  {
+    value: '192.168.0.15',
+    label: '192.168.0.15'
+  }
+]
+
+const counterOptions = [
+  {
+    value: '34',
+    label: 'tx_power_status'
+  },
+  {
+    value: '35',
+    label: 'rssi_status'
+  },
+  {
+    value: '36',
+    label: 'evm_status'
+  },
+  {
+    value: '37',
+    label: 'per_status'
+  },
+  {
+    value: '38',
+    label: 'temp_status'
+  },
+  {
+    value: '39',
+    label: 'modulation_tx_status'
+  },
+  {
+    value: '40',
+    label: 'modulation_rx_status'
+  }
+]
+
 const options = ref({
   responsive: true,
   maintainAspectRatio: false
 })
 
 const tableData = computed(() => rrlTestStore.rrl)
-
-// const tableData = rrlTestStore.rrl
 
 const convertDay = str => {
   const date = new Date(str)
@@ -117,7 +209,7 @@ const convertDay = str => {
   return [date.getFullYear(), mnth, day].join('-')
 }
 
-const setPage = (val) => {
+const setPage = val => {
   page.value = val
   fetchData()
 }
@@ -129,6 +221,40 @@ const fetchData = () => {
     end_date: convertDay(range.value[1])
   }
   rrlTestStore.getRrlTable(data)
+
+  chartKpiDataOne.value = rrlTestStore.getRequests?.one
+  chartKpiDataTwo.value = rrlTestStore.getRequests?.two
+}
+
+const fetchAggrChart = () => {
+  const data = {
+    start_date: convertDay(range.value[0]),
+    end_date: convertDay(range.value[1]),
+    host: hostValue.value,
+    counter: counterValue.value,
+    aggr_type: timeAggrValue.value
+  }
+
+  rrlTestStore.getAggregateRrl(data)
+}
+
+const handleSelect = () => {
+  if (chartAggr.value === 'requests') {
+    chartKpiDataOne.value = rrlTestStore.getRequests?.one
+    chartKpiDataTwo.value = rrlTestStore.getRequests?.two
+  }
+  if (chartAggr.value === 'success_requests') {
+    chartKpiDataOne.value = rrlTestStore.getSuccessRequests?.one
+    chartKpiDataTwo.value = rrlTestStore.getSuccessRequests?.two
+  }
+  if (chartAggr.value === 'size') {
+    chartKpiDataOne.value = rrlTestStore.getSize?.one
+    chartKpiDataTwo.value = rrlTestStore.getSize?.two
+  }
+  if (chartAggr.value === 'resolve_time') {
+    chartKpiDataOne.value = rrlTestStore.getResolveTime?.one
+    chartKpiDataTwo.value = rrlTestStore.getResolveTime?.two
+  }
 }
 </script>
 
@@ -144,6 +270,17 @@ const fetchData = () => {
   }
   .rrl-chart {
     width: 70%;
+  }
+  .aggr-chart-header {
+    display: flex;
+  }
+  .m-3 {
+    margin-bottom: 0.5rem;
+    margin-right: 0.5rem;
+  }
+  .aggr-rrl-chart {
+    widows: 70%;
+    height: 300px;
   }
 }
 </style>

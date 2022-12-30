@@ -1,7 +1,7 @@
 <template>
   <main class="rrl">
     <header>
-      <h1>RRL test</h1>
+      <h1>Мониторинг Статистики</h1>
     </header>
     <RrlTestView />
   </main>
